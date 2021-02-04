@@ -1,0 +1,65 @@
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <!-- Container wrapper -->
+  <div class="container-fluid">
+    <!-- Navbar brand -->
+    <a class="navbar-brand ripple d-inline-flex" href="/" style="flex: none;">
+        <img
+        src="/static/images/navbar_logo.png"
+        height="30"
+        alt=""
+        loading="lazy"
+        />
+        IVmonitor
+    </a>
+
+    <!-- Toggle button -->
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-mdb-toggle="collapse"
+      data-mdb-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Collapsible wrapper -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <!-- Left links -->
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="/">Strona główna</a>
+        </li>
+        {% if not request.session.user_id %}
+        <li class="nav-item">
+          <a class="nav-link" href="/users/login/">Zaloguj się</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/users/register/">Zarejestruj się</a>
+        </li>
+        {% else %}
+        <li class="nav-item">
+          <a class="nav-link" href="/panel/">Panel</a>
+        </li>
+        {% endif %}
+      </ul>
+      <!-- Left links -->
+        {% if request.session.user_id %}
+        <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link" href="/users/logout/">Wyloguj się</a>
+            </li>
+            <li class="nav-item">
+              <span class="nav-link">ivall</span>
+            </li>
+        </ul>
+        {% endif %}
+    </div>
+    <!-- Collapsible wrapper -->
+  </div>
+  <!-- Container wrapper -->
+</nav>
+<!-- Navbar -->

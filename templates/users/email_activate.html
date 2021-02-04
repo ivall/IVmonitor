@@ -1,0 +1,5 @@
+{% autoescape off %}
+Cześć {{ user.username }},
+Potwierdź adres email, który został użyty do rejestracji w serwisie IVmonitor.
+http://{{ domain }}{% url 'activate' uidb64=uid token=token %}
+{% endautoescape %}

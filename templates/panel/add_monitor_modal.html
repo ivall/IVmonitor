@@ -1,0 +1,61 @@
+<div
+  class="modal fade"
+  id="addMonitorModal"
+  tabindex="-1"
+  aria-labelledby="addMonitorModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addMonitorModalLabel">Dodawanie monitorowania</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-mdb-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form method="POST" action="/panel/monitor/add/" class="mt-3" id="monitor_form">
+          {% csrf_token %}
+
+          <!-- Name input -->
+          <div class="form-outline mb-4">
+            {{ addMonitorForm.name }}
+            <label class="form-label" for="{{ addMonitorForm.name.id_for_label }}">Nazwa</label>
+          </div>
+
+          <!-- rate input -->
+          <div class="form-outline mb-4">
+            <label class="form-label" id="labelRange">Czas co jaki sprwadza status (w minutach)</label>
+            <div class="range">
+                {{ addMonitorForm.rate }}
+            </div>
+          </div>
+
+          <!-- Type input -->
+          <div class="form-outline mb-4">
+              <input class="form-check-input" type="radio" name="type" id="id_type" value="website" checked/>
+              <label class="form-check-label" for="id_type">Strona internetowa</label>
+          </div>
+
+          <!-- Url input -->
+          <div class="form-outline mb-4">
+            {{ addMonitorForm.url }}
+            <label class="form-label" for="{{ addMonitorForm.url.id_for_label }}">URL strony</label>
+          </div>
+
+          {% include 'recaptcha.html' %}
+        </form>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-mdb-dismiss="modal">
+          Zamknij
+        </button>
+        <button type="submit" class="btn btn-primary" form="monitor_form">Zapisz</button>
+      </div>
+    </div>
+  </div>
+</div>

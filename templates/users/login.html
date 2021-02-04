@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block body %}
+<script>
+    function onChange() {
+        const password = document.querySelector('input[name=password]');
+        const confirm = document.querySelector('input[name=password_confirm]');
+        if (password.value !== confirm.value) {
+            confirm.setCustomValidity('Hasła nie zgadzają się.');
+        } else {
+            confirm.setCustomValidity('');
+        }
+    }
+</script>
+
+<div class="container mt-5 w-25">
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Logowanie</h5>
+            <form method="POST" action="/users/login/" class="mt-3" id="register_form">
+              {% csrf_token %}
+
+              <!-- Email input -->
+              <div class="form-outline mb-4">
+                {{ form.email }}
+                <label class="form-label" for="{{ form.email.id_for_label }}">Email</label>
+              </div>
+
+              <!-- Password input -->
+              <div class="form-outline mb-4">
+                {{ form.password }}
+                <label class="form-label" for="{{ form.password.id_for_label }}">Hasło</label>
+              </div>
+
+              <!-- 2 column grid layout for inline styling -->
+              <div class="row mb-4">
+                <div class="col">
+                  <!-- Simple link -->
+                  <a href="#">Nie pamiętasz hasła?</a>
+                </div>
+              </div>
+
+              <!-- Submit button -->
+              <button type="submit" class="btn btn-primary btn-block">Zaloguj się</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
