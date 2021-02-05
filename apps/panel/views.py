@@ -1,5 +1,4 @@
 import json
-import threading
 
 from django.shortcuts import render, redirect
 from django.views.generic import View, CreateView, DeleteView
@@ -12,6 +11,7 @@ from apps.users.models import User
 
 from .models import MonitorObject, Log, Alert
 from .forms import AddMonitorForm, AddAlertForm
+from config import MAX_USER_MONITORS
 
 
 class PanelView(View):
@@ -41,9 +41,14 @@ class AddMonitor(CreateView):
             messages.add_message(request, messages.ERROR, 'Captcha nie została uzupełniona poprawnie.')
             return redirect('/panel/')
 
+        user = User.objects.get(id=request.session['user_id'])
+        user_monitors = MonitorObject.objects.filter(user=user).count()
+        if user_monitors == MAX_USER_MONITORS:
+            messages.add_message(request, messages.ERROR, 'Osiągnąłeś już maksymalną ilość monitorów.')
+            return redirect('/panel/')
+
         form = AddMonitorForm(request.POST)
         if form.is_valid():
-            user = User.objects.get(id=request.session['user_id'])
             form.save(user)
             messages.add_message(request, messages.SUCCESS, message='Dodano poprawnie.')
             return redirect('/panel/')

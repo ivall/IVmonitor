@@ -43,8 +43,10 @@ def notify_user(site):
             elif alert.type == 'webhook':
                 post_value = alert.post_value.replace('((NAME))', monitor_object.name)
                 post_value = post_value.replace('((URL))', monitor_object.url)
-
-                json_data = json.loads(post_value)
+                try:
+                    json_data = json.loads(post_value)
+                except:
+                    return
                 r = requests.post(alert.url, json=json_data)
 
 

@@ -23,15 +23,6 @@ class AddMonitorForm(forms.ModelForm):
         model = MonitorObject
         fields = ('name', 'rate', 'type', 'url')
 
-    def clean_url(self):
-        url = self.cleaned_data.get("url")
-        try:
-            r = requests.get(url)
-        except:
-            raise forms.ValidationError("Ta strona nie działa.")
-
-        return url
-
     def clean_type(self):
         type = self.cleaned_data.get("type")
         if type not in MONITOR_TYPES:

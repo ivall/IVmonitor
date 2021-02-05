@@ -14,9 +14,12 @@ def check_site():
         if sites_to_check:
             site = sites_to_check[0]
             sites_to_check.remove(site)
-            r = requests.get(site.url).status_code
-            r = int(r)
-            if r == 200 or r == 201:
+            try:
+                r = requests.get(site.url).status_code
+                r = int(r)
+            except:
+                r = 500
+            if str(r)[0] == '2' or str(r)[0] == '3':
                 website_is_up(site)
             else:
                 notify_user(site)
