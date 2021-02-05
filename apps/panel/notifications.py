@@ -1,3 +1,6 @@
+import requests
+import json
+
 from django.core.mail import EmailMessage
 from django.template.loader import render_to_string
 
@@ -23,17 +26,26 @@ def notify_user(site):
     )
     log.save()
 
-    mail_subject = f'Strona {site.name} nie działa poprawnie.'
-    message = render_to_string('panel/website_error.html', {
-        'monitor_object': monitor_object,
-        'domain': DOMAIN
-    })
-    to_email = site.user.email
+    if user_alerts:
+        for alert in user_alerts:
+            if alert.type == 'email':
+                mail_subject = f'Strona {site.name} nie działa poprawnie.'
+                message = render_to_string('panel/website_error.html', {
+                    'monitor_object': monitor_object,
+                    'domain': DOMAIN
+                })
+                to_email = site.user.email
 
-    email = EmailMessage(
-        mail_subject, message, to=[to_email]
-    )
-    email.send()
+                email = EmailMessage(
+                    mail_subject, message, to=[to_email]
+                )
+                email.send()
+            elif alert.type == 'webhook':
+                post_value = alert.post_value.replace('((NAME))', monitor_object.name)
+                post_value = post_value.replace('((URL))', monitor_object.url)
+
+                json_data = json.loads(post_value)
+                r = requests.post(alert.url, json=json_data)
 
 
 def website_is_up(site):

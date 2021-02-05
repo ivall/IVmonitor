@@ -1,0 +1,83 @@
+<div
+  class="modal fade"
+  id="addAlertModal"
+  tabindex="-1"
+  aria-labelledby="addAlertModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addAlertModalLabel">Dodawanie powiadomienia</h5>
+        <button
+          type="button"
+          class="btn-close"
+          data-mdb-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form method="POST" action="/panel/alert/add/" class="mt-3" id="alert_form">
+          {% csrf_token %}
+
+          <!-- Name input -->
+          <div class="form-outline mb-4">
+            {{ addAlertForm.name }}
+            <label class="form-label" for="{{ addAlertForm.name.id_for_label }}">Nazwa</label>
+          </div>
+
+
+            <label class="form-label" for="id_type">Typ</label><br/>
+            <select name="type" id="id_type" onchange="handleTypeClick(this)" class="form-control">
+                <option value="email">email</option>
+                <option value="webhook">webhook</option>
+            </select><br/>
+
+
+            <div class="d-none" id="webhook-form">
+              <!-- Url (webhook only) input -->
+              <div class="form-outline mb-4">
+                {{ addAlertForm.url }}
+                <label class="form-label" for="{{ addAlertForm.url.id_for_label }}">URL strony</label>
+              </div>
+
+              <!-- Post value (webhook only) input -->
+              <div class="form-outline mb-4">
+                {{ addAlertForm.post_value }}
+                <label class="form-label" for="{{ addAlertForm.post_value.id_for_label }}">Wartość webhooka</label>
+              </div>
+                <div id="postValueHelp" class="form-text">
+                  Json, który ma zostać wysłany. Metoda wysyłania webhooka: <b>POST</b>.
+                  Wartości do użycia:
+                  <ul>
+                      <li><b>((NAME))</b> - nazwa monitora</li>
+                      <li><b>((URL))</b> - URL monitora</li>
+                  </ul>
+                </div>
+            </div>
+
+        </form>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-mdb-dismiss="modal">
+          Zamknij
+        </button>
+        <button type="submit" class="btn btn-primary" form="alert_form">Zapisz</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+    function handleTypeClick(type) {
+        console.log(type)
+        if (type.value === 'webhook') {
+            document.getElementById('webhook-form').classList.remove('d-none');
+            document.getElementById('webhook-form').classList.add('d-block');
+        } else {
+            document.getElementById('webhook-form').classList.remove('d-block');
+            document.getElementById('webhook-form').classList.add('d-none');
+        }
+}
+</script>

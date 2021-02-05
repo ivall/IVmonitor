@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% block body %}
 {% include 'panel/add_monitor_modal.html' %}
+    {% include 'panel/add_alert_modal.html' %}
 
 <div class="own-container d-flex m-5 flex-column">
     <div class="sides w-100 d-flex">
@@ -52,7 +53,35 @@
             <div class="card card-body">
                 <h5 class="card-title">Powiadomienia</h5>
                 <div class="card-text">
-                    <button class="btn btn-primary">Dodaj powiadomienie</button>
+                    <div>
+                        <button class="btn btn-primary" data-mdb-toggle="modal" data-mdb-target="#addAlertModal">Dodaj powiadomienie</button>
+                    </div>
+                    <table class="table caption-top">
+                      <thead>
+                        <tr>
+                          <th scope="col">#</th>
+                          <th scope="col">Nazwa</th>
+                          <th scope="col">Typ</th>
+                          <th scope="col">Akcje</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                      {% for alert in alerts %}
+                        <tr>
+                          <th scope="row">{{ alert.id }}</th>
+                          <td>{{ alert.name }}</td>
+                          <td>{{ alert.type }}</td>
+                          <td>
+                              <form method="POST" action="/panel/alert/delete/">
+                                  {% csrf_token %}
+                                  <input type="hidden" value="{{ alert.id }}" name="alert_id">
+                                  <button type="submit" class="btn btn-danger"><i class="fas fa-trash"></i></button>
+                              </form>
+                          </td>
+                        </tr>
+                      {% endfor %}
+                      </tbody>
+                    </table>
                 </div>
             </div>
         </div>
