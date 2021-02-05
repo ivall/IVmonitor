@@ -1,8 +1,10 @@
 import threading
 import time
+from datetime import datetime
 import requests
 
 from .models import MonitorObject
+from .notifications import notify_user, website_is_up
 
 sites_to_check = []
 
@@ -13,7 +15,11 @@ def check_site():
             site = sites_to_check[0]
             sites_to_check.remove(site)
             r = requests.get(site.url).status_code
-            print(site.name)
+            r = int(r)
+            if r == 200 or r == 201:
+                website_is_up(site)
+            else:
+                notify_user(site)
         else:
             time.sleep(0.1)
 
@@ -27,6 +33,12 @@ def get_sites():
         objects = MonitorObject.objects.all()
         for object in objects:
             if object not in sites_to_check:
-                sites_to_check.append(object)
+                ts = time.time()
+                current_str_time = str(ts)
+                if object.next_check == current_str_time or object.next_check < current_str_time or object.next_check == '2137':
+                    sites_to_check.append(object)
+
+                    next_check = ts + (60*object.rate)
+                    MonitorObject.objects.filter(id=object.id).update(next_check=next_check)
         print(sites_to_check)
         time.sleep(60)

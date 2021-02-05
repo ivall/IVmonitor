@@ -10,13 +10,8 @@ from apps.users.decorators import login_required
 from apps.home.utils import verify_captcha
 from apps.users.models import User
 
-from .models import MonitorObject
+from .models import MonitorObject, Log
 from .forms import AddMonitorForm
-
-
-from .checker import get_sites
-t1 = threading.Thread(target=get_sites)
-t1.start()
 
 
 class PanelView(View):
@@ -24,9 +19,11 @@ class PanelView(View):
     def get(self, request, *args, **kwargs):
         user = User.objects.get(id=request.session['user_id'])
         monitors = MonitorObject.objects.filter(user=user)
+        logs = Log.objects.filter(monitor_object__user_id=user.id).order_by('-id')[:10]
         context = {
             'addMonitorForm': AddMonitorForm(),
-            'monitors': monitors
+            'monitors': monitors,
+            'logs': logs
         }
         return render(request, 'panel/panel.html', context=context)
 

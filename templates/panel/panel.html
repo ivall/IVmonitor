@@ -2,57 +2,91 @@
 {% block body %}
 {% include 'panel/add_monitor_modal.html' %}
 
-<div class="own-container d-flex m-5">
-    <div class="left w-50 m-2 h-100">
-        <div class="card card-body">
-            <h5 class="card-title">Monitorowanie</h5>
-            <div class="card-text">
-                <div>
-                    <button class="btn btn-primary" data-mdb-toggle="modal" data-mdb-target="#addMonitorModal">Dodaj monitor</button>
+<div class="own-container d-flex m-5 flex-column">
+    <div class="sides w-100 d-flex">
+        <div class="left w-50 m-2 h-100">
+            <div class="card card-body">
+                <h5 class="card-title">Monitorowanie</h5>
+                <div class="card-text">
+                    <div>
+                        <button class="btn btn-primary" data-mdb-toggle="modal" data-mdb-target="#addMonitorModal">Dodaj monitor</button>
+                    </div>
+                    <table class="table caption-top">
+                      <thead>
+                        <tr>
+                          <th scope="col">#</th>
+                          <th scope="col">Nazwa</th>
+                          <th scope="col">URL</th>
+                          <th scope="col">Czas</th>
+                          <th scope="col">Typ</th>
+                          <th scope="col">Akcje</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                      {% for monitor in monitors %}
+                        <tr>
+                          <th scope="row">{{ monitor.id }}</th>
+                          <td>{{ monitor.name }}</td>
+                          <td>{{ monitor.url }}</td>
+                          <td>{{ monitor.rate }}</td>
+                          <td>
+                              {% if monitor.type == 'website' %}
+                                  Strona www
+                              {% endif %}
+                          </td>
+                          <td>
+                              <form method="POST" action="/panel/monitor/delete/">
+                                  {% csrf_token %}
+                                  <input type="hidden" value="{{ monitor.id }}" name="monitor_id">
+                                  <button type="submit" class="btn btn-danger"><i class="fas fa-trash"></i></button>
+                              </form>
+                          </td>
+                        </tr>
+                      {% endfor %}
+                      </tbody>
+                    </table>
                 </div>
+            </div>
+        </div>
+        <div class="right w-50 m-2">
+            <div class="card card-body">
+                <h5 class="card-title">Powiadomienia</h5>
+                <div class="card-text">
+                    <button class="btn btn-primary">Dodaj powiadomienie</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="m-2">
+        <div class="card card-body">
+            <h5 class="card-title">Logi</h5>
+            <div class="card-text">
                 <table class="table caption-top">
                   <thead>
                     <tr>
                       <th scope="col">#</th>
-                      <th scope="col">Nazwa</th>
-                      <th scope="col">URL</th>
+                      <th scope="col">Nazwa monitora</th>
+                      <th scope="col">Status</th>
                       <th scope="col">Czas</th>
-                      <th scope="col">Typ</th>
-                      <th scope="col">Akcje</th>
                     </tr>
                   </thead>
                   <tbody>
-                  {% for monitor in monitors %}
+                  {% for log in logs %}
                     <tr>
-                      <th scope="row">{{ monitor.id }}</th>
-                      <td>{{ monitor.name }}</td>
-                      <td>{{ monitor.url }}</td>
-                      <td>{{ monitor.rate }}</td>
+                      <th scope="row">{{ log.id }}</th>
+                      <td>{{ log.monitor_object.name }}</td>
                       <td>
-                          {% if monitor.type == 'website' %}
-                              Strona www
+                          {% if log.status == 'down' %}
+                              <i class="fas fa-times" style="color: red;"></i>
+                          {% else %}
+                              <i class="fas fa-check" style="color: green;"></i>
                           {% endif %}
                       </td>
-                      <td>
-                          <form method="POST" action="/panel/monitor/delete/">
-                              {% csrf_token %}
-                              <input type="hidden" value="{{ monitor.id }}" name="monitor_id">
-                              <button type="submit" class="btn btn-danger"><i class="fas fa-trash"></i></button>
-                          </form>
-                      </td>
+                      <td>{{ log.time|date:"d.m.Y" }} {{ log.time|time:"H:i" }}</td>
                     </tr>
                   {% endfor %}
                   </tbody>
                 </table>
-            </div>
-
-        </div>
-    </div>
-    <div class="right w-50 m-2">
-        <div class="card card-body">
-            <h5 class="card-title">Powiadomienia</h5>
-            <div class="card-text">
-                <button class="btn btn-primary">Dodaj powiadomienie</button>
             </div>
         </div>
     </div>
