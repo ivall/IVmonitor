@@ -1,6 +1,5 @@
 import threading
 import time
-from datetime import datetime
 import requests
 
 from .models import MonitorObject
@@ -16,13 +15,16 @@ def check_site():
             sites_to_check.remove(site)
             try:
                 r = requests.get(site.url).status_code
-                r = int(r)
+            except requests.ConnectionError:
+                r = 503
+            except requests.Timeout:
+                r = 408
             except:
                 r = 500
             if str(r)[0] == '2' or str(r)[0] == '3':
-                website_is_up(site)
+                website_is_up(site, r)
             else:
-                notify_user(site)
+                notify_user(site, r)
         else:
             time.sleep(0.1)
 
@@ -32,6 +34,8 @@ def get_sites():
     t1.start()
     t2 = threading.Thread(target=check_site)
     t2.start()
+    t3 = threading.Thread(target=check_site)
+    t3.start()
     while True:
         objects = MonitorObject.objects.all()
         for object in objects:

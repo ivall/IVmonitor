@@ -43,12 +43,18 @@ class AddMonitor(CreateView):
 
         user = User.objects.get(id=request.session['user_id'])
         user_monitors = MonitorObject.objects.filter(user=user).count()
-        if user_monitors == MAX_USER_MONITORS:
+        if user_monitors >= MAX_USER_MONITORS:
             messages.add_message(request, messages.ERROR, 'Osiągnąłeś już maksymalną ilość monitorów.')
             return redirect('/panel/')
 
         form = AddMonitorForm(request.POST)
         if form.is_valid():
+            monitor_url = form.cleaned_data['url']
+            check_monitor = MonitorObject.objects.filter(user=user, url=monitor_url).exists()
+            if check_monitor:
+                messages.add_message(request, messages.ERROR, 'Dodałeś już taki URL.')
+                return redirect('/panel/')
+
             form.save(user)
             messages.add_message(request, messages.SUCCESS, message='Dodano poprawnie.')
             return redirect('/panel/')

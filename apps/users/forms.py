@@ -79,6 +79,8 @@ class UserLoginForm(forms.ModelForm):
         email = self.cleaned_data.get("email")
 
         user = User.objects.filter(email=email).values('password')
+        if not user:
+            raise forms.ValidationError('Taki użytkownik nie istnieje.')
 
         if not verify_password(password, user[0]['password']):
             raise forms.ValidationError('Niepoprawne hasło.')

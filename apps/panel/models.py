@@ -25,5 +25,6 @@ class Alert(models.Model):
 
 class Log(models.Model):
     monitor_object = models.ForeignKey(MonitorObject, on_delete=models.CASCADE)
-    status = models.CharField(max_length=4)  # down or up after website was down
+    status = models.BooleanField()
+    status_code = models.IntegerField()
     time = models.DateTimeField(default=timezone.now)

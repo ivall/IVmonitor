@@ -1,5 +1,6 @@
 from django.contrib import admin
 from django.urls import path
+from django.conf import settings
 
 from . import views
 
@@ -12,10 +13,8 @@ urlpatterns = [
 ]
 
 
+
 import threading
-
 from .checker import get_sites
-
 t1 = threading.Thread(target=get_sites)
 t1.start()
-
