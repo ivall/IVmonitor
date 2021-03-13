@@ -3,7 +3,7 @@ import time
 import requests
 
 from .models import MonitorObject
-from .notifications import notify_user, website_is_up
+from .notifications import Notifications
 
 sites_to_check = []
 
@@ -13,14 +13,18 @@ def check_site():
         if sites_to_check:
             site = sites_to_check[0]
             sites_to_check.remove(site)
+
             try:
-                r = requests.get(site.url).status_code
+                status_code = requests.get(site.url).status_code
             except:
-                r = 0  # no response from website
-            if str(r)[0] == '2' or str(r)[0] == '3':
-                website_is_up(site, r)
+                status_code = 0  # no response from website
+
+            notifications = Notifications(site, status_code)
+
+            if str(status_code)[0] == '2' or str(status_code)[0] == '3':
+                notifications.website_is_up()
             else:
-                notify_user(site, r)  # website is down
+                notifications.website_is_down()
         else:
             time.sleep(0.1)
 
