@@ -15,16 +15,12 @@ def check_site():
             sites_to_check.remove(site)
             try:
                 r = requests.get(site.url).status_code
-            except requests.ConnectionError:
-                r = 503
-            except requests.Timeout:
-                r = 408
             except:
-                r = 500
+                r = 0  # no response from website
             if str(r)[0] == '2' or str(r)[0] == '3':
                 website_is_up(site, r)
             else:
-                notify_user(site, r)
+                notify_user(site, r)  # website is down
         else:
             time.sleep(0.1)
 
@@ -47,5 +43,4 @@ def get_sites():
 
                     next_check = ts + (60*object.rate)
                     MonitorObject.objects.filter(id=object.id).update(next_check=next_check)
-        print(sites_to_check)
         time.sleep(60)

@@ -4,7 +4,7 @@ from django.utils import timezone
 from apps.users.models import User
 
 
-class MonitorObject(models.Model):
+class MonitorObject(models.Model):  # this name of model really sucks, I need to change it
     name = models.CharField(max_length=32)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     rate = models.IntegerField()  # every x minutes check status

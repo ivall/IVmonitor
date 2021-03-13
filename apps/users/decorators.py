@@ -11,12 +11,12 @@ def login_required():
                 messages.add_message(request, messages.ERROR, 'Nie jesteś zalogowany.')
                 return redirect('/')
 
-            user = User.objects.filter(id=request.session['user_id'], activated=True).exists()
+            user = User.objects.filter(id=request.session['user_id'], activated=True)[0]
             if not user:
                 del request.session['user_id']
-                messages.add_message(request, messages.ERROR, 'Potwierdź adres email.')
+                messages.add_message(request, messages.ERROR, 'Nie znaleziono takiego uzytkownika lub nie aktywowałeś konta.')
                 return redirect('/')
 
-            return function(request, *args, **kw)
+            return function(request, user, *args, **kw)
         return wrapper
     return decorator
